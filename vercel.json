@@ -1,5 +1,7 @@
 {
   "buildCommand": "echo 'Static HTML project'",
   "outputDirectory": "FRONT-END",
-  "framework": "static"
+  "framework": "static",
+  "cleanUrls": false,
+  "trailingSlash": false
 }
