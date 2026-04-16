@@ -1,30 +1,5 @@
 {
-  "buildCommand": "echo 'Static HTML project - no build needed'",
+  "buildCommand": "echo 'Static HTML project'",
   "outputDirectory": "FRONT-END",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/robots.txt",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/plain"
-        }
-      ]
-    },
-    {
-      "source": "/sitemap.xml",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/xml"
-        }
-      ]
-    }
-  ]
+  "framework": "static"
 }
