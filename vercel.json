@@ -1,5 +1,4 @@
 {
-  "buildCommand": "cp -r FRONT-END/* .",
-  "outputDirectory": ".",
-  "framework": "static"
+  "buildCommand": "npm run build",
+  "outputDirectory": ".vercel/output/static"
 }
