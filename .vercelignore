@@ -1,0 +1,16 @@
+.git
+.gitignore
+node_modules
+npm-debug.log
+.next
+.nuxt
+dist
+build
+.env
+.env.local
+.env.*.local
+FRONT-END/.nojekyll
+FRONT-END/OTIMIZACOES.md
+FRONT-END/.htaccess
+README.md
+v0_plans

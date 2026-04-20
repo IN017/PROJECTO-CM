@@ -1,3 +1,6 @@
 {
-  "framework": "static"
+  "framework": "static",
+  "buildCommand": "echo 'Static site'",
+  "outputDirectory": ".",
+  "public": true
 }
