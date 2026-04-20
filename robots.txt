@@ -1,0 +1,22 @@
+# Robots.txt for Carlos Mateus Website
+# Optimized for search engine crawling
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+
+# Crawl delay to prevent server overload
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://carlosmateus.com/sitemap.xml
+
+# Specific rules for Google
+User-agent: Googlebot
+Allow: /
+
+# Specific rules for Bing
+User-agent: Bingbot
+Allow: /
