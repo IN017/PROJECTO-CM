@@ -1,6 +1,4 @@
 {
-  "framework": "static",
-  "buildCommand": "echo 'Static site'",
-  "outputDirectory": ".",
-  "public": true
+  "buildCommand": "npm run build",
+  "outputDirectory": "."
 }
