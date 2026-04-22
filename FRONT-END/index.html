@@ -1,486 +1,708 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Carlos Mateus – Informática & Telecomunicações</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cyan: #00c8ff;
+      --muted: #7ba0c8;
+      --bg: #060e1c;
+      --text: #ddeeff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Exo 2', sans-serif; }
+    .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+    #bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 90% 70% at 10% 5%, rgba(26,86,219,.22), transparent 65%),
+        radial-gradient(ellipse 60% 50% at 90% 90%, rgba(0,200,255,.12), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(18,48,160,.1), transparent 70%),
+        var(--bg);
+    }
+    #bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(26,86,219,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,86,219,.06) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+    body > *:not(#bg-mesh):not(#bg-grid) {
+      position: relative;
+      z-index: 1;
+    }
+    #navbar.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,.5); }
+    .burger { flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .burger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: .3s; }
+    .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger.open span:nth-child(2) { opacity: 0; }
+    .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    #mob-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; bottom: 0; background: rgba(6,14,28,.97); backdrop-filter: blur(20px); z-index: 49; padding: 2.5rem 2rem; flex-direction: column; gap: .75rem; border-top: 1px solid rgba(26,86,219,.25); }
+    #mob-menu.open { display: flex; }
+    #mob-menu a { display: block; color: #ddeeff; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: .06em; padding: .85rem 0; border-bottom: 1px solid rgba(26,86,219,.15); transition: color .2s; }
+    #mob-menu a:hover { color: var(--cyan); }
+    #mob-menu .mob-cta { margin-top: 1.5rem; display: inline-flex; padding: 14px 36px; justify-content: center; background: linear-gradient(135deg, #2563eb, #1230a0); color: #fff; border-radius: 12px; font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 4px 20px rgba(26,86,219,.5); }
+    .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .35; pointer-events: none; animation: orbFloat 8s ease-in-out infinite; }
+    .orb1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(26,86,219,.6), transparent); top: -10%; left: -10%; }
+    .orb2 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(0,200,255,.4), transparent); bottom: -5%; right: -5%; animation-delay: 3s; }
+    .orb3 { width: 250px; height: 250px; background: radial-gradient(circle, rgba(37,99,235,.4), transparent); top: 45%; left: 60%; animation-delay: 5s; }
+    @keyframes orbFloat { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(20px,-20px) scale(1.05); } 66% { transform: translate(-15px,15px) scale(.97); } }
+    .hero-logo-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 2.5rem; }
+    .ring-glow { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(26,86,219,.5), transparent 70%); animation: ringPulse 3s ease-in-out infinite; }
+    .ring-border { position: absolute; width: 175px; height: 175px; border-radius: 50%; border: 1px solid rgba(0,200,255,.3); animation: ringRotate 20s linear infinite; }
+    .ring-border::before { content: ''; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; border-radius: 50%; background: #00c8ff; box-shadow: 0 0 12px #00c8ff; transform: translateX(-50%); }
+    @keyframes ringPulse { 0%,100% { transform: scale(1); opacity: .7; } 50% { transform: scale(1.15); opacity: 1; } }
+    @keyframes ringRotate { to { transform: rotate(360deg); } }
+    .hero-logo-img { position: relative; z-index: 1; width: 150px; height: 150px; border-radius: 9999px; object-fit: cover; box-shadow: 0 0 40px rgba(26,86,219,.6), 0 20px 60px rgba(0,0,0,.5); border: 3px solid rgba(0,200,255,.3); }
+    .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--cyan); animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(1.6); } }
+    .scroll-hint { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: .5; animation: scrollBounce 2s ease-in-out infinite; }
+    .scroll-hint span { font-size: .65rem; letter-spacing: .15em; color: var(--muted); text-transform: uppercase; }
+    @keyframes scrollBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity .75s ease, transform .75s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .filter-btn { border: 1.5px solid rgba(26,86,219,.3); background: transparent; color: #7ba0c8; transition: all .25s; font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; }
+    .filter-btn.active, .filter-btn:hover { background: linear-gradient(135deg, #2563eb, #1230a0); border-color: transparent; color: #fff; box-shadow: 0 4px 16px rgba(26,86,219,.45); }
+    #modal-overlay { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(4,10,20,.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 2rem; }
+    #modal-overlay.open { display: flex; }
+    .modal-box { background: #0b1829; border: 1px solid rgba(26,86,219,.3); border-radius: 1.25rem; max-width: 600px; width: 100%; overflow: hidden; position: relative; }
+    .modal-img { width: 100%; height: 260px; object-fit: cover; filter: brightness(.8); }
+    .modal-body { padding: 2rem; }
+    .modal-cat { font-size: .72rem; color: var(--cyan); letter-spacing: .15em; text-transform: uppercase; margin-bottom: .5rem; }
+    .modal-title { font-family: 'Rajdhani', sans-serif; font-size: 1.7rem; font-weight: 700; color: #fff; margin-bottom: .75rem; }
+    .modal-text { font-size: .92rem; color: #a5c0dc; line-height: 1.85; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 9999px; background: rgba(6,14,28,.7); border: 1px solid rgba(26,86,219,.3); color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .modal-close:hover { background: rgba(26,86,219,.4); }
+    #toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 60; background: rgba(0,30,10,.85); border: 1px solid rgba(34,197,94,.4); border-radius: 12px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: .75rem; color: #86efac; font-weight: 600; font-size: .9rem; box-shadow: 0 8px 32px rgba(0,0,0,.5); transform: translateX(120%); transition: transform .4s cubic-bezier(.22,.68,0,1.2); }
+    #toast.show { transform: translateX(0); }
+  </style>
 </head>
-<body class="font-['Exo_2'] bg-[#07101f] text-[#e0eaff] overflow-x-hidden">
+<body class="min-h-screen overflow-x-hidden bg-[#060e1c] text-[#ddeeff]">
 
-<div class="fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,rgba(26,86,219,0.18),transparent_70%),radial-gradient(ellipse_60%_40%_at_80%_80%,rgba(0,200,255,0.10),transparent_60%),#07101f]"></div>
-<div class="fixed inset-0 z-0 bg-[linear-gradient(rgba(26,86,219,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(26,86,219,0.07)_1px,transparent_1px)] bg-[length:60px_60px]"></div>
+<div id="bg-mesh"></div>
+<div id="bg-grid"></div>
 
-<!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-20 backdrop-blur-[20px] bg-[#07101f]/80 border-b border-[#1a56db]/30">
-  <div class="max-w-7xl mx-auto flex items-center justify-between px-8 h-16">
-    <div class="flex items-center gap-3">
-      <img src="logotipo.jpeg" alt="Carlos Mateus Logo" class="h-14 w-auto rounded-lg shadow-lg">
-      <div class="font-['Rajdhani'] font-bold text-xl text-white tracking-[0.08em]">CARLOS<span class="text-[#00c8ff]">MATEUS</span></div>
-    </div>
-    <ul class="flex gap-8 list-none">
-      <li><a href="#sobre" class="text-[#8eadd4] no-underline text-sm font-medium tracking-[0.05em] uppercase hover:text-[#00c8ff] transition-colors duration-200">Sobre</a></li>
-      <li><a href="#servicos" class="text-[#8eadd4] no-underline text-sm font-medium tracking-[0.05em] uppercase hover:text-[#00c8ff] transition-colors duration-200">Serviços</a></li>
-      <li><a href="#mvv" class="text-[#8eadd4] no-underline text-sm font-medium tracking-[0.05em] uppercase hover:text-[#00c8ff] transition-colors duration-200">Missão</a></li>
-      <li><a href="#valores" class="text-[#8eadd4] no-underline text-sm font-medium tracking-[0.05em] uppercase hover:text-[#00c8ff] transition-colors duration-200">Valores</a></li>
-      <li><a href="#contacto" class="text-[#8eadd4] no-underline text-sm font-medium tracking-[0.05em] uppercase hover:text-[#00c8ff] transition-colors duration-200">Contacto</a></li>
+<nav id="navbar" class="fixed inset-x-0 top-0 z-50 backdrop-blur-xl bg-[rgba(6,14,28,.85)] border-b border-[rgba(26,86,219,.25)]">
+  <div class="mx-auto flex max-w-[1300px] items-center justify-between px-6 py-4 h-[72px]">
+    <a href="#hero" class="flex items-center gap-3">
+      <img src="logotipo.jpeg" alt="Carlos Mateus Logo" class="h-14 w-auto rounded-lg shadow-lg"/>
+      <div class="font-rajdhani font-bold text-xl tracking-[.06em] text-white">CARLOS<span class="text-[#00c8ff]">MATEUS</span></div>
+    </a>
+    <ul class="hidden md:flex items-center gap-1">
+      <li><a href="#sobre" class="rounded-lg px-3 py-1 text-[0.82rem] font-semibold uppercase tracking-[.08em] text-[#7ba0c8] transition-colors duration-200 hover:bg-[rgba(0,200,255,.06)] hover:text-[#00c8ff]">Sobre</a></li>
+      <li><a href="#servicos" class="rounded-lg px-3 py-1 text-[0.82rem] font-semibold uppercase tracking-[.08em] text-[#7ba0c8] transition-colors duration-200 hover:bg-[rgba(0,200,255,.06)] hover:text-[#00c8ff]">Serviços</a></li>
+      <li><a href="#projetos" class="rounded-lg px-3 py-1 text-[0.82rem] font-semibold uppercase tracking-[.08em] text-[#7ba0c8] transition-colors duration-200 hover:bg-[rgba(0,200,255,.06)] hover:text-[#00c8ff]">Projetos</a></li>
+      <li><a href="#mvv" class="rounded-lg px-3 py-1 text-[0.82rem] font-semibold uppercase tracking-[.08em] text-[#7ba0c8] transition-colors duration-200 hover:bg-[rgba(0,200,255,.06)] hover:text-[#00c8ff]">Missão</a></li>
+      <li><a href="#valores" class="rounded-lg px-3 py-1 text-[0.82rem] font-semibold uppercase tracking-[.08em] text-[#7ba0c8] transition-colors duration-200 hover:bg-[rgba(0,200,255,.06)] hover:text-[#00c8ff]">Valores</a></li>
+      <li><a href="#contacto" class="rounded-lg px-3 py-1 text-[0.82rem] font-semibold uppercase tracking-[.08em] text-[#7ba0c8] transition-colors duration-200 hover:bg-[rgba(0,200,255,.06)] hover:text-[#00c8ff]">Contacto</a></li>
     </ul>
-    <div class="hidden flex-col gap-1.5 cursor-pointer" onclick="toggleMenu()">
-      <span class="block w-6 h-0.5 bg-white rounded transition-all duration-300"></span><span class="block w-6 h-0.5 bg-white rounded transition-all duration-300"></span><span class="block w-6 h-0.5 bg-white rounded transition-all duration-300"></span>
+    <a href="#contacto" class="hidden md:inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-[#2563eb] to-[#1230a0] px-6 py-2 text-[0.85rem] font-rajdhani font-bold uppercase tracking-[.08em] text-white shadow-[0_2px_16px_rgba(26,86,219,.45)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(26,86,219,.65)]">Pedir Orçamento</a>
+    <div id="burger" class="burger md:hidden flex" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
     </div>
   </div>
 </nav>
 
-<div class="hidden fixed top-16 left-0 right-0 bg-[#07101f]/98 px-8 py-6 z-10 border-b border-[#1a56db]/30" id="mobileMenu">
-  <ul class="list-none flex flex-col gap-4">
-    <li><a href="#sobre" onclick="toggleMenu()" class="text-[#e0eaff] no-underline text-base font-medium tracking-[0.05em] uppercase">Sobre</a></li>
-    <li><a href="#servicos" onclick="toggleMenu()" class="text-[#e0eaff] no-underline text-base font-medium tracking-[0.05em] uppercase">Serviços</a></li>
-    <li><a href="#mvv" onclick="toggleMenu()" class="text-[#e0eaff] no-underline text-base font-medium tracking-[0.05em] uppercase">Missão</a></li>
-    <li><a href="#valores" onclick="toggleMenu()" class="text-[#e0eaff] no-underline text-base font-medium tracking-[0.05em] uppercase">Valores</a></li>
-    <li><a href="#contacto" onclick="toggleMenu()" class="text-[#e0eaff] no-underline text-base font-medium tracking-[0.05em] uppercase">Contacto</a></li>
-  </ul>
+<div id="mob-menu" class="hidden">
+  <a href="#sobre" onclick="closeMob()">Sobre</a>
+  <a href="#servicos" onclick="closeMob()">Serviços</a>
+  <a href="#projetos" onclick="closeMob()">Projetos</a>
+  <a href="#mvv" onclick="closeMob()">Missão &amp; Visão</a>
+  <a href="#valores" onclick="closeMob()">Valores</a>
+  <a href="#contacto" onclick="closeMob()">Contacto</a>
+  <a href="#contacto" class="mob-cta" onclick="closeMob()">Pedir Orçamento</a>
 </div>
 
-<!-- HERO -->
-<section id="hero" class="min-h-screen flex items-center justify-center py-20 px-8 pt-32 pb-20">
-  <div class="max-w-2xl text-center">
-    <div class="inline-flex items-center gap-2 px-4.5 py-1.5 border border-[#00c8ff]/35 rounded-full text-xs text-[#00c8ff] tracking-[0.12em] uppercase mb-8 bg-[#00c8ff]/6 before:content-[''] before:w-1.5 before:h-1.5 before:rounded-full before:bg-[#00c8ff] before:animate-pulse">Soluções em TI & Telecomunicações</div>
-
-    <div class="relative inline-flex items-center justify-center mb-8">
-      <div class="absolute w-40 h-40 rounded-full bg-[radial-gradient(circle,rgba(26,86,219,0.45),transparent_70%)] animate-pulse"></div>
-      <img src="logotipo.jpeg" alt="Carlos Mateus Logo" class="relative z-10 w-40 h-40 object-cover rounded-full shadow-2xl">
+<section id="hero" class="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-[140px] pb-[100px]">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="relative z-10 mx-auto max-w-[780px] text-center">
+    <div class="inline-flex items-center gap-2 rounded-full border border-[rgba(0,200,255,.3)] bg-[rgba(0,200,255,.07)] px-5 py-2 text-[0.72rem] uppercase tracking-[.15em] text-[#00c8ff] mb-10">
+      <div class="dot"></div>
+      Soluções em TI &amp; Telecomunicações
     </div>
-
-    <h1 class="font-['Rajdhani'] text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-white tracking-[0.05em] mb-1.5">CARLOS <span class="text-[#00c8ff]">MATEUS</span></h1>
-    <p class="text-base text-[#8eadd4] tracking-[0.15em] uppercase mb-6">Prestação de Serviços · Informática & Telecomunicações</p>
-    <p class="text-lg text-[#a8c0e0] leading-relaxed mb-10 max-w-md mx-auto">
-      Soluções tecnológicas completas, modernas e adaptadas às necessidades de empresas
-      e clientes particulares. Qualidade, inovação e compromisso em cada projeto.
-    </p>
-
-    <div class="flex gap-4 justify-center flex-wrap">
-      <a href="#servicos" class="px-9 py-3.5 bg-gradient-to-br from-[#1a56db] to-[#1a3a8f] text-white border-none rounded-md font-['Rajdhani'] text-base font-semibold tracking-[0.08em] uppercase cursor-pointer no-underline inline-block shadow-[0_4px_24px_rgba(26,86,219,0.5)] hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(26,86,219,0.7)] transition-all duration-200">Ver Serviços</a>
-      <a href="#contacto" class="px-9 py-3.5 bg-transparent text-[#00c8ff] border border-[#00c8ff]/50 rounded-md font-['Rajdhani'] text-base font-semibold tracking-[0.08em] uppercase cursor-pointer no-underline inline-block hover:bg-[#00c8ff]/8 hover:-translate-y-0.5 transition-all duration-200">Contactar</a>
+    <div class="hero-logo-ring">
+      <div class="ring-glow"></div>
+      <div class="ring-border"></div>
+      <img src="logotipo.jpeg" alt="Logo Carlos Mateus" class="hero-logo-img" onerror="this.outerHTML='<div style=&quot;position:relative;z-index:1;width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#1230a0);display:flex;align-items:center;justify-content:center;font-family:Rajdhani,sans-serif;font-weight:700;font-size:3rem;color:#fff;box-shadow:0 0 40px rgba(26,86,219,.6);border:3px solid rgba(0,200,255,.3);&quot;>CM</div>'" />
     </div>
+    <h1 class="font-rajdhani text-[clamp(3rem,9vw,6rem)] font-bold leading-none tracking-[.04em] text-white mb-3">CARLOS <span class="text-[#00c8ff]">MATEUS</span></h1>
+    <p class="text-[clamp(.75rem,1.8vw,.9rem)] uppercase tracking-[.18em] text-[#7ba0c8] mb-8">Prestação de Serviços · Informática &amp; Telecomunicações</p>
+    <p class="mx-auto mb-10 max-w-[580px] text-[1.05rem] leading-[1.85] text-[#a5c0dc]">Soluções tecnológicas completas, modernas e adaptadas às necessidades de empresas e clientes particulares em Benguela, Angola. Qualidade, inovação e compromisso em cada projeto.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="#servicos" class="inline-flex items-center justify-center rounded-[1rem] bg-gradient-to-br from-[#2563eb] to-[#1230a0] px-10 py-4 text-[1rem] font-rajdhani font-bold uppercase tracking-[.08em] text-white shadow-[0_4px_24px_rgba(26,86,219,.5)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_10px_36px_rgba(26,86,219,.7)]">Ver Serviços</a>
+      <a href="#contacto" class="inline-flex items-center justify-center rounded-[1rem] border border-[rgba(0,200,255,.45)] bg-[rgba(0,200,255,.05)] px-10 py-4 text-[1rem] font-rajdhani font-bold uppercase tracking-[.08em] text-[#00c8ff] transition duration-200 hover:-translate-y-1 hover:bg-[rgba(0,200,255,.1)]">Contactar Agora</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Explorar</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
   </div>
 </section>
 
-<!-- SOBRE -->
-<section id="sobre" class="py-24">
-  <div class="max-w-7xl mx-auto px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-      <div class="opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="text-xs text-[#00c8ff] tracking-[0.2em] uppercase mb-3">Quem somos</div>
-        <h2 class="font-['Rajdhani'] text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-[0.04em] mb-4">A Empresa</h2>
-        <div class="w-16 h-1 bg-gradient-to-r from-[#1a56db] to-[#00c8ff] rounded mb-6"></div>
-        <p class="text-[#a8c0e0] leading-relaxed text-base mb-4">
-          A <strong class="text-white">Carlos Mateus (CM)</strong> é uma empresa especializada na prestação
-          de serviços nas áreas de Tecnologias de Informação (TI) e Telecomunicações, oferecendo soluções
-          completas, modernas e adaptadas às necessidades de empresas e clientes particulares.
-        </p>
-        <p class="text-[#a8c0e0] leading-relaxed text-base mb-4">
-          Atuamos com foco técnico e profissional, utilizando boas práticas e tecnologias atualizadas,
-          para garantir a qualidade na implementação de sistemas de informática e telecomunicações.
-        </p>
-        <p class="text-[#a8c0e0] leading-relaxed text-base mb-4">
-          A nossa sede está localizada na <strong class="text-white">Rua João Belo, Benguela</strong>,
-          onde recebemos os nossos clientes e parceiros de negócios.
-        </p>
-      </div>
-      <div class="grid grid-cols-2 gap-6 opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="bg-[#1a56db]/8 border border-[#1a56db]/20 rounded-xl p-6 text-center hover:border-[#00c8ff]/50 hover:bg-[#00c8ff]/5 transition-all duration-300">
-          <div class="font-['Rajdhani'] text-4xl font-bold text-[#00c8ff] leading-none mb-1">7+</div>
-          <div class="text-xs text-[#8eadd4] uppercase tracking-[0.1em]">Áreas de Serviço</div>
-        </div>
-        <div class="bg-[#1a56db]/8 border border-[#1a56db]/20 rounded-xl p-6 text-center hover:border-[#00c8ff]/50 hover:bg-[#00c8ff]/5 transition-all duration-300">
-          <div class="font-['Rajdhani'] text-4xl font-bold text-[#00c8ff] leading-none mb-1">100%</div>
-          <div class="text-xs text-[#8eadd4] uppercase tracking-[0.1em]">Qualidade Técnica</div>
-        </div>
-        <div class="bg-[#1a56db]/8 border border-[#1a56db]/20 rounded-xl p-6 text-center hover:border-[#00c8ff]/50 hover:bg-[#00c8ff]/5 transition-all duration-300">
-          <div class="font-['Rajdhani'] text-4xl font-bold text-[#00c8ff] leading-none mb-1">24/7</div>
-          <div class="text-xs text-[#8eadd4] uppercase tracking-[0.1em]">Suporte</div>
-        </div>
-        <div class="bg-[#1a56db]/8 border border-[#1a56db]/20 rounded-xl p-6 text-center hover:border-[#00c8ff]/50 hover:bg-[#00c8ff]/5 transition-all duration-300">
-          <div class="font-['Rajdhani'] text-4xl font-bold text-[#00c8ff] leading-none mb-1">CM</div>
-          <div class="text-xs text-[#8eadd4] uppercase tracking-[0.1em]">Marca de Confiança</div>
+<section id="sobre" class="py-[110px]">
+  <div class="mx-auto max-w-[1300px] px-6">
+    <div class="grid gap-24 lg:grid-cols-2 items-center">
+      <div class="space-y-6 reveal">
+        <div class="text-[0.72rem] uppercase tracking-[.22em] text-[#00c8ff]">Quem somos</div>
+        <h2 class="font-rajdhani text-[clamp(2rem,5vw,3.2rem)] font-bold text-white tracking-[.04em]">A Nossa Empresa</h2>
+        <div class="h-[3px] w-16 rounded-full bg-gradient-to-r from-[#2563eb] to-[#00c8ff]"></div>
+        <p class="text-[#a5c0dc] leading-[1.9] text-base">A <strong class="text-white">Carlos Mateus (CM)</strong> é uma empresa especializada na prestação de serviços nas áreas de Tecnologias de Informação (TI) e Telecomunicações, oferecendo soluções completas, modernas e adaptadas às necessidades de empresas e clientes particulares.</p>
+        <p class="text-[#a5c0dc] leading-[1.9] text-base">Atuamos com foco técnico e profissional, utilizando boas práticas e tecnologias atualizadas, para garantir a máxima qualidade na implementação de sistemas de informática e telecomunicações.</p>
+        <p class="text-[#a5c0dc] leading-[1.9] text-base">A nossa sede está localizada na <strong class="text-white">Rua João Belo, Benguela</strong>, onde recebemos os nossos clientes e parceiros de negócios.</p>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-3 text-sm text-[#c5d8ee]"><span class="inline-flex h-5 w-5 shrink-0 rounded-full border border-[#00c8ff] bg-[rgba(0,200,255,.1)]"></span>Profissionais qualificados e experientes</div>
+          <div class="flex items-center gap-3 text-sm text-[#c5d8ee]"><span class="inline-flex h-5 w-5 shrink-0 rounded-full border border-[#00c8ff] bg-[rgba(0,200,255,.1)]"></span>Tecnologias de última geração</div>
+          <div class="flex items-center gap-3 text-sm text-[#c5d8ee]"><span class="inline-flex h-5 w-5 shrink-0 rounded-full border border-[#00c8ff] bg-[rgba(0,200,255,.1)]"></span>Suporte técnico dedicado 24/7</div>
+          <div class="flex items-center gap-3 text-sm text-[#c5d8ee]"><span class="inline-flex h-5 w-5 shrink-0 rounded-full border border-[#00c8ff] bg-[rgba(0,200,255,.1)]"></span>Projetos entregues no prazo</div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVIÇOS -->
-<section id="servicos" class="py-24 bg-[#0d1b2e]/50">
-  <div class="max-w-7xl mx-auto px-8">
-    <div class="text-center mb-16 opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-      <div class="text-xs text-[#00c8ff] tracking-[0.2em] uppercase mb-3">O que fazemos</div>
-      <h2 class="font-['Rajdhani'] text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-[0.04em] mb-4">Nossos Serviços</h2>
-      <div class="w-16 h-1 bg-gradient-to-r from-[#1a56db] to-[#00c8ff] rounded mb-4 mx-auto"></div>
-      <p class="text-[#8eadd4] max-w-md mx-auto text-sm leading-relaxed">
-        Atuamos com foco técnico e profissional nas principais áreas de TI e Telecomunicações.
-      </p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-[#00c8ff]">
-          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 7h12" />
-            <path d="M6 17h12" />
-            <path d="M9 7v10" />
-            <path d="M15 7v10" />
-            <path d="M4 12h2" />
-            <path d="M18 12h2" />
-          </svg>
+      <div class="grid gap-6 sm:grid-cols-2 reveal">
+        <div class="group rounded-[1.25rem] border border-[rgba(26,86,219,.2)] bg-[rgba(26,86,219,.08)] p-8 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+          <div class="text-[2.8rem] font-rajdhani font-bold text-[#00c8ff] leading-none mb-2">7+</div>
+          <div class="text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Áreas de Serviço</div>
         </div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Instalação de Redes</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Infraestruturas de redes com cabeamento estruturado UTP e fibra óptica.
-          Configuração de redes LAN/WAN para empresas e residências.
+        <div class="group rounded-[1.25rem] border border-[rgba(26,86,219,.2)] bg-[rgba(26,86,219,.08)] p-8 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+          <div class="text-[2.8rem] font-rajdhani font-bold text-[#00c8ff] leading-none mb-2">100%</div>
+          <div class="text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Qualidade</div>
         </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">UTP</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Fibra Óptica</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">LAN/WAN</span>
+        <div class="group rounded-[1.25rem] border border-[rgba(26,86,219,.2)] bg-[rgba(26,86,219,.08)] p-8 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+          <div class="text-[2.8rem] font-rajdhani font-bold text-[#00c8ff] leading-none mb-2">24/7</div>
+          <div class="text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Suporte</div>
         </div>
-      </div>
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-[#00c8ff]">
-          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="7" width="18" height="12" rx="2" />
-            <path d="M7 7v-2" />
-            <path d="M17 7v-2" />
-            <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
-          </svg>
-        </div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Videovigilância CCTV</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Instalação de câmeras analógicas e IP. Sistemas de gravação DVR/NVR
-          para segurança residencial e empresarial.
-        </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Câmeras IP</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">DVR/NVR</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Segurança</span>
-        </div>
-      </div>
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-[#00c8ff]">
-          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2C8 7 6 9 6 12c0 3 2 5 6 5s6-2 6-5c0-3-2-5-6-10z" />
-            <path d="M9 18c1.5 1 3 1 4 0" />
-          </svg>
-        </div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Alarme de Incêndio</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Instalação de sistemas de detecção e alarme de incêndio com sensores,
-          centrais de alarme e dispositivos de segurança.
-        </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Sensores</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Central de Alarme</span>
-        </div>
-      </div>
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-[#00c8ff]">
-          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="4" y="5" width="16" height="12" rx="2" />
-            <path d="M8 21h8" />
-            <path d="M12 17v4" />
-          </svg>
-        </div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Sistemas Operativos</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Instalação e configuração de Windows, Linux e outros ambientes.
-          Optimização e manutenção de sistemas informáticos.
-        </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Windows</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Linux</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Manutenção</span>
-        </div>
-      </div>
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-[#00c8ff]">
-          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3v18" />
-            <path d="M8 7l4-4 4 4" />
-            <path d="M8 17l4 4 4-4" />
-            <path d="M4 12h16" />
-          </svg>
-        </div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Rádio Telecomunicações</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Montagem de sistemas de rádio telecomunicações, equipamentos de transmissão
-          e receção, e configuração de enlaces de comunicação.
-        </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Transmissão</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Recepção</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Enlace</span>
-        </div>
-      </div>
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-[#00c8ff]">
-          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="6" width="18" height="12" rx="2" />
-            <path d="M8 18h8" />
-            <path d="M7 11h10" />
-          </svg>
-        </div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Sistemas de TV</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Instalação de sistemas SMATV para hotéis e soluções residenciais com
-          antenas e TV por cabo.
-        </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">SMATV</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Hotéis</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">Antenas</span>
-        </div>
-      </div>
-      <div class="bg-[#0f2645]/6 border border-[#1a56db]/20 rounded-2xl p-8 hover:border-[#00c8ff]/4 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3),0_0_30px_rgba(26,86,219,0.15)] transition-all duration-300 relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:bg-gradient-to-r before:from-transparent before:via-[#1a56db] before:to-[#00c8ff] before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-13 h-13 bg-gradient-to-br from-[#1a56db]/3 to-[#00c8ff]/15 border border-[#1a56db]/4 rounded-xl flex items-center justify-center mb-6 text-2xl">☎️</div>
-        <div class="font-['Rajdhani'] text-xl font-semibold text-white mb-2.5 tracking-[0.03em]">Infraestruturas de Telefonia</div>
-        <div class="text-sm text-[#8eadd4] leading-relaxed">
-          Instalação de telefonia IP (VoIP) e sistemas analógicos com centrais
-          telefónicas PABX para empresas.
-        </div>
-        <div class="flex flex-wrap gap-1.5 mt-4">
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">VoIP</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">PABX</span>
-          <span class="text-xs text-[#00c8ff] border border-[#00c8ff]/3 rounded-full px-2.5 py-0.5 tracking-[0.08em] bg-[#00c8ff]/5">IP</span>
+        <div class="group rounded-[1.25rem] border border-[rgba(26,86,219,.2)] bg-[rgba(26,86,219,.08)] p-8 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+          <div class="text-[2.8rem] font-rajdhani font-bold text-[#00c8ff] leading-none mb-2">∞</div>
+          <div class="text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Dedicação</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MISSÃO / VISÃO / OBJETIVO -->
-<section id="mvv" class="py-24 relative z-10">
-  <div class="max-w-7xl mx-auto px-8">
-    <div class="text-center opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-      <div class="text-xs text-[#00c8ff] tracking-[0.2em] uppercase mb-3">Identidade Corporativa</div>
-      <h2 class="font-['Rajdhani'] text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-[0.04em] mb-4">Missão, Visão & Objetivo</h2>
-      <div class="w-16 h-1 bg-gradient-to-r from-[#1a56db] to-[#00c8ff] rounded mx-auto"></div>
+<section id="servicos" class="py-[110px] bg-[rgba(11,24,41,.6)]">
+  <div class="mx-auto max-w-[1300px] px-6">
+    <div class="space-y-6 text-center reveal">
+      <div class="text-[0.72rem] uppercase tracking-[.22em] text-[#00c8ff]">O que fazemos</div>
+      <h2 class="font-rajdhani text-[clamp(2rem,5vw,3.2rem)] font-bold text-white tracking-[.04em]">Nossos Serviços</h2>
+      <div class="mx-auto h-[3px] w-16 rounded-full bg-gradient-to-r from-[#2563eb] to-[#00c8ff]"></div>
+      <p class="mx-auto max-w-[520px] text-[#7ba0c8] text-base leading-[1.8]">Atuamos com foco técnico e profissional nas principais áreas de TI e Telecomunicações.</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-      <div class="bg-[#0f2645]/4 border border-[#1a56db]/2 rounded-2xl p-10 text-center opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <svg class="w-16 h-16 text-[#00c8ff] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10"/>
-          <circle cx="12" cy="12" r="6"/>
-          <circle cx="12" cy="12" r="2"/>
-        </svg>
-        <div class="font-['Rajdhani'] text-xl font-bold text-[#00c8ff] tracking-[0.08em] mb-4">Objetivo</div>
-        <div class="text-sm text-[#a8c0e0] leading-relaxed">
-          Oferecer soluções tecnológicas eficientes, seguras e inovadoras, garantindo
-          qualidade na implementação de sistemas de informática e telecomunicações, com
-          foco na satisfação e confiança dos clientes.
+    <div class="mt-16 grid gap-7 xl:grid-cols-3">
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" alt="Redes" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">🔌</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Instalação de Redes</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Infraestruturas completas com cabeamento estruturado UTP e fibra óptica. Configuração de redes LAN/WAN para empresas e residências.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">UTP</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Fibra Óptica</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">LAN/WAN</span>
+          </div>
         </div>
       </div>
-      <div class="bg-[#0f2645]/4 border border-[#1a56db]/2 rounded-2xl p-10 text-center opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <svg class="w-16 h-16 text-[#00c8ff] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        <div class="font-['Rajdhani'] text-xl font-bold text-[#00c8ff] tracking-[0.08em] mb-4">Missão</div>
-        <div class="text-sm text-[#a8c0e0] leading-relaxed">
-          Fornecer serviços de excelência em TI e Telecomunicações, utilizando boas práticas,
-          tecnologias atualizadas e profissionais qualificados, contribuindo para o crescimento
-          e modernização dos nossos clientes.
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=600&q=80" alt="CCTV" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">📷</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Videovigilância CCTV</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Instalação de câmeras analógicas e IP. Sistemas de gravação DVR/NVR para segurança residencial e empresarial.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Câmeras IP</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">DVR/NVR</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Segurança</span>
+          </div>
         </div>
       </div>
-      <div class="bg-[#0f2645]/4 border border-[#1a56db]/2 rounded-2xl p-10 text-center opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <svg class="w-16 h-16 text-[#00c8ff] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-        </svg>
-        <div class="font-['Rajdhani'] text-xl font-bold text-[#00c8ff] tracking-[0.08em] mb-4">Visão</div>
-        <div class="text-sm text-[#a8c0e0] leading-relaxed">
-          Ser uma empresa de referência no mercado nacional, reconhecida pela qualidade dos
-          serviços, inovação tecnológica e compromisso com os clientes, expandindo
-          continuamente a sua atuação no setor de tecnologia.
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=600&q=80" alt="Alarme" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">🔥</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Alarme de Incêndio</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Sistemas de detecção e alarme com sensores, centrais de alarme e dispositivos de segurança certificados.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Sensores</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Central Alarme</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Protecção</span>
+          </div>
+        </div>
+      </div>
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80" alt="Sistemas" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">💻</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Sistemas Operativos</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Instalação e configuração de Windows, Linux e outros ambientes. Optimização e manutenção de sistemas informáticos.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Windows</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Linux</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Manutenção</span>
+          </div>
+        </div>
+      </div>
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80" alt="Telecomunicações" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">📡</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Rádio Telecomunicações</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Montagem de sistemas de rádio telecomunicações, equipamentos de transmissão/receção e configuração de enlaces.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Transmissão</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Recepção</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Enlace</span>
+          </div>
+        </div>
+      </div>
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1461151304267-38231e7ce048?w=600&q=80" alt="TV" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">📺</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Sistemas de TV</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Instalação de sistemas SMATV para hotéis e soluções residenciais com antenas, TV por cabo e satélite.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">SMATV</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Hotéis</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">Antenas</span>
+          </div>
+        </div>
+      </div>
+      <div class="group overflow-hidden rounded-[20px] border border-[rgba(26,86,219,.18)] bg-[rgba(14,32,64,.7)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.45)] hover:shadow-[0_24px_60px_rgba(0,0,0,.4),0_0_40px_rgba(26,86,219,.18)]">
+        <div class="relative h-[190px] overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&q=80" alt="Telefonia" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" />
+          <div class="absolute inset-0 bg-gradient-to-b from-[rgba(14,32,64,.1)] to-[rgba(14,32,64,.85)]"></div>
+          <div class="absolute left-4 bottom-4 flex h-12 w-12 items-center justify-center rounded-[12px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-xl shadow-[0_4px_16px_rgba(0,0,0,.4)]">☎️</div>
+        </div>
+        <div class="flex h-full flex-col gap-4 p-6">
+          <div class="font-rajdhani text-xl font-bold text-white">Infraestruturas de Telefonia</div>
+          <div class="text-[#7ba0c8] text-sm leading-[1.8]">Instalação de telefonia IP (VoIP) e sistemas analógicos com centrais telefónicas PABX para empresas.</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">VoIP</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">PABX</span>
+            <span class="rounded-full border border-[rgba(0,200,255,.28)] bg-[rgba(0,200,255,.05)] px-3 py-1 text-[0.68rem] text-[#00c8ff] tracking-[.07em]">IP</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- VALORES -->
-<section id="valores" class="py-24 bg-[#0d1b2e]/50 relative z-10">
-  <div class="max-w-7xl mx-auto px-8">
-    <div class="opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-      <div class="text-xs text-[#00c8ff] tracking-[0.2em] uppercase mb-3">Princípios</div>
-      <h2 class="font-['Rajdhani'] text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-[0.04em] mb-4">Nossos Valores</h2>
-      <div class="w-16 h-1 bg-gradient-to-r from-[#1a56db] to-[#00c8ff] rounded mb-6"></div>
+<section id="projetos" class="py-[110px]">
+  <div class="mx-auto max-w-[1300px] px-6">
+    <div class="space-y-6 text-center reveal">
+      <div class="text-[0.72rem] uppercase tracking-[.22em] text-[#00c8ff]">Portfólio</div>
+      <h2 class="font-rajdhani text-[clamp(2rem,5vw,3.2rem)] font-bold text-white tracking-[.04em]">Projetos Realizados</h2>
+      <div class="mx-auto h-[3px] w-16 rounded-full bg-gradient-to-r from-[#2563eb] to-[#00c8ff]"></div>
+      <p class="mx-auto max-w-[520px] text-[#7ba0c8] text-base leading-[1.8]">Trabalhos realizados com qualidade e profissionalismo em Benguela e arredores.</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-      <div class="flex gap-4 items-start bg-[#1a56db]/6 border border-[#1a56db]/15 rounded-xl p-6 hover:border-[#00c8ff]/4 transition-all duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-2.5 h-2.5 min-w-2.5 rounded-full bg-[#00c8ff] mt-1.5 shadow-[0_0_10px_rgba(0,200,255,0.6)]"></div>
-        <div>
-          <div class="font-['Rajdhani'] text-lg font-bold text-white mb-1 tracking-[0.05em]">Compromisso</div>
-          <div class="text-sm text-[#8eadd4] leading-relaxed">Cumprir prazos e garantir a satisfação do cliente em cada projeto.</div>
+    <div class="mt-12 flex flex-wrap justify-center gap-2 reveal">
+      <button class="filter-btn rounded-full px-5 py-2 text-[0.85rem]" onclick="filterP('todos',this)">Todos</button>
+      <button class="filter-btn rounded-full px-5 py-2 text-[0.85rem]" onclick="filterP('redes',this)">Redes</button>
+      <button class="filter-btn rounded-full px-5 py-2 text-[0.85rem]" onclick="filterP('cctv',this)">CCTV</button>
+      <button class="filter-btn rounded-full px-5 py-2 text-[0.85rem]" onclick="filterP('telefonia',this)">Telefonia</button>
+      <button class="filter-btn rounded-full px-5 py-2 text-[0.85rem]" onclick="filterP('tv',this)">Sistemas TV</button>
+    </div>
+    <div id="proj-grid" class="mt-10 grid gap-6 lg:grid-cols-3">
+      <div class="proj-card group relative overflow-hidden rounded-[18px] border border-[rgba(26,86,219,.18)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:shadow-[0_20px_50px_rgba(0,0,0,.5)] lg:col-span-2" data-cat="redes" onclick="openModal('Infraestrutura de Redes – Hotel Benguela','Redes','https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&q=80','Instalação completa de rede estruturada com fibra óptica e cabeamento UTP Cat6 num hotel de 5 estrelas em Benguela. O projeto incluiu a configuração de switches geridos, pontos de acesso Wi-Fi e segmentação de VLANs para garantir segurança e desempenho máximos.')">
+        <img class="proj-img h-full w-full min-h-[260px] object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&q=80" alt="Redes Hotel" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(6,14,28,.95)] p-7 flex flex-col justify-end">
+          <div class="text-[0.68rem] uppercase tracking-[.15em] text-[#00c8ff] mb-2">Infraestrutura de Redes</div>
+          <div class="font-rajdhani text-2xl font-bold text-white mb-2">Hotel 5 Estrelas – Benguela</div>
+          <div class="text-sm leading-6 text-[#a5c0dc]">Rede estruturada completa com fibra óptica e Wi-Fi gerido.</div>
+        </div>
+        <div class="proj-btn-wrap absolute top-4 right-4 opacity-0 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1">
+          <div class="proj-view-btn inline-flex rounded-full border border-[rgba(0,200,255,.5)] bg-[rgba(0,200,255,.2)] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[.08em] text-[#00c8ff]">Ver Projeto</div>
         </div>
       </div>
-      <div class="flex gap-4 items-start bg-[#1a56db]/6 border border-[#1a56db]/15 rounded-xl p-6 hover:border-[#00c8ff]/4 transition-all duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-2.5 h-2.5 min-w-2.5 rounded-full bg-[#00c8ff] mt-1.5 shadow-[0_0_10px_rgba(0,200,255,0.6)]"></div>
-        <div>
-          <div class="font-['Rajdhani'] text-lg font-bold text-white mb-1 tracking-[0.05em]">Qualidade</div>
-          <div class="text-sm text-[#8eadd4] leading-relaxed">Executar serviços com elevado padrão técnico e precisão.</div>
+      <div class="proj-card group relative overflow-hidden rounded-[18px] border border-[rgba(26,86,219,.18)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:shadow-[0_20px_50px_rgba(0,0,0,.5)]" data-cat="cctv" onclick="openModal('Sistema CCTV – Empresa Industrial','CCTV','https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=700&q=80','Instalação de 32 câmeras IP de alta resolução com sistema de gravação NVR, cobertura total do perímetro e integração com sistema de alarme. Monitorização remota 24/7 disponível via aplicação móvel.')">
+        <img class="proj-img h-full w-full min-h-[260px] object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=700&q=80" alt="CCTV" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(6,14,28,.95)] p-7 flex flex-col justify-end">
+          <div class="text-[0.68rem] uppercase tracking-[.15em] text-[#00c8ff] mb-2">Videovigilância CCTV</div>
+          <div class="font-rajdhani text-2xl font-bold text-white mb-2">Empresa Industrial</div>
+          <div class="text-sm leading-6 text-[#a5c0dc]">32 câmeras IP + NVR com monitorização remota.</div>
+        </div>
+        <div class="proj-btn-wrap absolute top-4 right-4 opacity-0 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1">
+          <div class="proj-view-btn inline-flex rounded-full border border-[rgba(0,200,255,.5)] bg-[rgba(0,200,255,.2)] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[.08em] text-[#00c8ff]">Ver Projeto</div>
         </div>
       </div>
-      <div class="flex gap-4 items-start bg-[#1a56db]/6 border border-[#1a56db]/15 rounded-xl p-6 hover:border-[#00c8ff]/4 transition-all duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-2.5 h-2.5 min-w-2.5 rounded-full bg-[#00c8ff] mt-1.5 shadow-[0_0_10px_rgba(0,200,255,0.6)]"></div>
-        <div>
-          <div class="font-['Rajdhani'] text-lg font-bold text-white mb-1 tracking-[0.05em]">Inovação</div>
-          <div class="text-sm text-[#8eadd4] leading-relaxed">Acompanhar as novas tecnologias e tendências do mercado.</div>
+      <div class="proj-card group relative overflow-hidden rounded-[18px] border border-[rgba(26,86,219,.18)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:shadow-[0_20px_50px_rgba(0,0,0,.5)]" data-cat="telefonia" onclick="openModal('PABX VoIP – Escritório Corporativo','Telefonia','https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=700&q=80','Implementação de central PABX IP com 50 ramais, integração com Microsoft Teams e configuração de IVR personalizado. O sistema reduziu os custos de comunicação em 60% e melhorou a qualidade das chamadas.')">
+        <img class="proj-img h-full w-full min-h-[260px] object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=700&q=80" alt="Telefonia" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(6,14,28,.95)] p-7 flex flex-col justify-end">
+          <div class="text-[0.68rem] uppercase tracking-[.15em] text-[#00c8ff] mb-2">Telefonia IP / VoIP</div>
+          <div class="font-rajdhani text-2xl font-bold text-white mb-2">Escritório Corporativo</div>
+          <div class="text-sm leading-6 text-[#a5c0dc]">Central PABX IP com 50 ramais e integração Teams.</div>
+        </div>
+        <div class="proj-btn-wrap absolute top-4 right-4 opacity-0 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1">
+          <div class="proj-view-btn inline-flex rounded-full border border-[rgba(0,200,255,.5)] bg-[rgba(0,200,255,.2)] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[.08em] text-[#00c8ff]">Ver Projeto</div>
         </div>
       </div>
-      <div class="flex gap-4 items-start bg-[#1a56db]/6 border border-[#1a56db]/15 rounded-xl p-6 hover:border-[#00c8ff]/4 transition-all duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-2.5 h-2.5 min-w-2.5 rounded-full bg-[#00c8ff] mt-1.5 shadow-[0_0_10px_rgba(0,200,255,0.6)]"></div>
-        <div>
-          <div class="font-['Rajdhani'] text-lg font-bold text-white mb-1 tracking-[0.05em]">Responsabilidade</div>
-          <div class="text-sm text-[#8eadd4] leading-relaxed">Atuar com ética e profissionalismo em todos os projetos.</div>
+      <div class="proj-card group relative overflow-hidden rounded-[18px] border border-[rgba(26,86,219,.18)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:shadow-[0_20px_50px_rgba(0,0,0,.5)]" data-cat="tv" onclick="openModal('Sistema SMATV – Resort Turístico','Sistemas TV','https://images.unsplash.com/photo-1461151304267-38231e7ce048?w=700&q=80','Instalação de sistema SMATV para resort com 120 quartos, distribuição de 80 canais por satélite e cabo. O projeto incluiu cabos coaxiais, amplificadores e televisores de 55 poleçadas em todos os quartos.')">
+        <img class="proj-img h-full w-full min-h-[260px] object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" src="https://images.unsplash.com/photo-1461151304267-38231e7ce048?w=700&q=80" alt="TV Resort" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(6,14,28,.95)] p-7 flex flex-col justify-end">
+          <div class="text-[0.68rem] uppercase tracking-[.15em] text-[#00c8ff] mb-2">Sistemas de TV</div>
+          <div class="font-rajdhani text-2xl font-bold text-white mb-2">Resort Turístico – 120 Quartos</div>
+          <div class="text-sm leading-6 text-[#a5c0dc]">SMATV com 80 canais para resort completo.</div>
+        </div>
+        <div class="proj-btn-wrap absolute top-4 right-4 opacity-0 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1">
+          <div class="proj-view-btn inline-flex rounded-full border border-[rgba(0,200,255,.5)] bg-[rgba(0,200,255,.2)] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[.08em] text-[#00c8ff]">Ver Projeto</div>
         </div>
       </div>
-      <div class="flex gap-4 items-start bg-[#1a56db]/6 border border-[#1a56db]/15 rounded-xl p-6 hover:border-[#00c8ff]/4 transition-all duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-2.5 h-2.5 min-w-2.5 rounded-full bg-[#00c8ff] mt-1.5 shadow-[0_0_10px_rgba(0,200,255,0.6)]"></div>
-        <div>
-          <div class="font-['Rajdhani'] text-lg font-bold text-white mb-1 tracking-[0.05em]">Trabalho em Equipa</div>
-          <div class="text-sm text-[#8eadd4] leading-relaxed">Valorizar a colaboração entre os profissionais da empresa.</div>
+      <div class="proj-card group relative overflow-hidden rounded-[18px] border border-[rgba(26,86,219,.18)] transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:shadow-[0_20px_50px_rgba(0,0,0,.5)] lg:col-span-2" data-cat="cctv" onclick="openModal('Segurança Integrada – Condomínio de Luxo','CCTV','https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=900&q=80','Projeto de segurança integrada para condomínio de luxo com 200 unidades: 60 câmeras IP 4K, sistema de alarme, controlo de acessos biométrico e intercomunicadores IP em todos os apartamentos. Central de segurança 24/7.')">
+        <img class="proj-img h-full w-full min-h-[260px] object-cover transition duration-500 group-hover:scale-105 group-hover:brightness-90" src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=900&q=80" alt="Condomínio" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgba(6,14,28,.95)] p-7 flex flex-col justify-end">
+          <div class="text-[0.68rem] uppercase tracking-[.15em] text-[#00c8ff] mb-2">Segurança Integrada</div>
+          <div class="font-rajdhani text-2xl font-bold text-white mb-2">Condomínio de Luxo – 200 Unidades</div>
+          <div class="text-sm leading-6 text-[#a5c0dc]">60 câmeras 4K + controlo de acessos + alarme integrado.</div>
         </div>
-      </div>
-      <div class="flex gap-4 items-start bg-[#1a56db]/6 border border-[#1a56db]/15 rounded-xl p-6 hover:border-[#00c8ff]/4 transition-all duration-300 opacity-0 translate-y-8" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="w-2.5 h-2.5 min-w-2.5 rounded-full bg-[#00c8ff] mt-1.5 shadow-[0_0_10px_rgba(0,200,255,0.6)]"></div>
-        <div>
-          <div class="font-['Rajdhani'] text-lg font-bold text-white mb-1 tracking-[0.05em]">Foco no Cliente</div>
-          <div class="text-sm text-[#8eadd4] leading-relaxed">Entender e atender as necessidades específicas de cada cliente.</div>
+        <div class="proj-btn-wrap absolute top-4 right-4 opacity-0 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1">
+          <div class="proj-view-btn inline-flex rounded-full border border-[rgba(0,200,255,.5)] bg-[rgba(0,200,255,.2)] px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[.08em] text-[#00c8ff]">Ver Projeto</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACTO -->
-<section id="contacto" class="py-24 relative z-10">
-  <div class="max-w-7xl mx-auto px-8">
-    <div class="opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-      <div class="text-xs text-[#00c8ff] tracking-[0.2em] uppercase mb-3">Fale Connosco</div>
-      <h2 class="font-['Rajdhani'] text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-[0.04em] mb-4">Contacto</h2>
-      <div class="w-16 h-1 bg-gradient-to-r from-[#1a56db] to-[#00c8ff] rounded mb-6"></div>
+<section id="mvv" class="py-[110px] bg-[rgba(11,24,41,.6)]">
+  <div class="mx-auto max-w-[1300px] px-6">
+    <div class="text-center reveal">
+      <div class="text-[0.72rem] uppercase tracking-[.22em] text-[#00c8ff]">Identidade Corporativa</div>
+      <h2 class="font-rajdhani text-[clamp(2rem,5vw,3.2rem)] font-bold text-white tracking-[.04em]">Missão, Visão &amp; Objetivo</h2>
+      <div class="mx-auto mt-4 h-[3px] w-16 rounded-full bg-gradient-to-r from-[#2563eb] to-[#00c8ff]"></div>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start mt-12">
-      <div class="opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <h3 class="font-['Rajdhani'] text-xl font-bold text-white mb-6 tracking-[0.05em]">Estamos disponíveis para si</h3>
-        <div class="flex items-start gap-4 mb-6">
-          <div class="w-11 h-11 min-w-11 bg-[#1a56db]/15 border border-[#1a56db]/3 rounded-xl flex items-center justify-center text-[#00c8ff]">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L9.91 10.09a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
+    <div class="mt-14 grid gap-8 lg:grid-cols-3">
+      <div class="reveal rounded-[20px] border border-[rgba(26,86,219,.2)] bg-[rgba(14,32,64,.55)] p-10 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.35)]">
+        <div class="mx-auto mb-5 flex h-18 w-18 items-center justify-center rounded-[18px] bg-gradient-to-br from-[rgba(26,86,219,.25)] to-[rgba(0,200,255,.12)] border border-[rgba(26,86,219,.35)] text-3xl">🎯</div>
+        <div class="font-rajdhani text-[1.4rem] font-bold text-[#00c8ff] tracking-[.08em] mb-4">Objetivo</div>
+        <div class="text-[#a5c0dc] text-sm leading-[1.85]">Oferecer soluções tecnológicas eficientes, seguras e inovadoras, garantindo qualidade na implementação de sistemas de informática e telecomunicações, com foco na satisfação e confiança dos clientes.</div>
+      </div>
+      <div class="reveal rounded-[20px] border border-[rgba(26,86,219,.2)] bg-[rgba(14,32,64,.55)] p-10 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.35)]">
+        <div class="mx-auto mb-5 flex h-18 w-18 items-center justify-center rounded-[18px] bg-gradient-to-br from-[rgba(26,86,219,.25)] to-[rgba(0,200,255,.12)] border border-[rgba(26,86,219,.35)] text-3xl">🚀</div>
+        <div class="font-rajdhani text-[1.4rem] font-bold text-[#00c8ff] tracking-[.08em] mb-4">Missão</div>
+        <div class="text-[#a5c0dc] text-sm leading-[1.85]">Fornecer serviços de excelência em TI e Telecomunicações, utilizando boas práticas, tecnologias atualizadas e profissionais qualificados, contribuindo para o crescimento e modernização dos nossos clientes.</div>
+      </div>
+      <div class="reveal rounded-[20px] border border-[rgba(26,86,219,.2)] bg-[rgba(14,32,64,.55)] p-10 text-center transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.35)]">
+        <div class="mx-auto mb-5 flex h-18 w-18 items-center justify-center rounded-[18px] bg-gradient-to-br from-[rgba(26,86,219,.25)] to-[rgba(0,200,255,.12)] border border-[rgba(26,86,219,.35)] text-3xl">🌐</div>
+        <div class="font-rajdhani text-[1.4rem] font-bold text-[#00c8ff] tracking-[.08em] mb-4">Visão</div>
+        <div class="text-[#a5c0dc] text-sm leading-[1.85]">Ser uma empresa de referência no mercado nacional, reconhecida pela qualidade dos serviços, inovação tecnológica e compromisso com os clientes, expandindo continuamente a sua atuação no setor de tecnologia.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="valores" class="py-[110px]">
+  <div class="mx-auto max-w-[1300px] px-6">
+    <div class="reveal space-y-6">
+      <div class="text-[0.72rem] uppercase tracking-[.22em] text-[#00c8ff]">Princípios</div>
+      <h2 class="font-rajdhani text-[clamp(2rem,5vw,3.2rem)] font-bold text-white tracking-[.04em]">Nossos Valores</h2>
+      <div class="h-[3px] w-16 rounded-full bg-gradient-to-r from-[#2563eb] to-[#00c8ff]"></div>
+    </div>
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="reveal flex gap-4 rounded-[14px] border border-[rgba(26,86,219,.15)] bg-[rgba(26,86,219,.06)] p-7 transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[rgba(26,86,219,.3)] to-[rgba(0,200,255,.1)] border border-[rgba(0,200,255,.2)] text-xl">🤝</div>
+        <div><div class="font-rajdhani text-lg font-bold text-white mb-1">Compromisso</div><div class="text-[#7ba0c8] text-sm leading-[1.7]">Cumprir prazos e garantir a satisfação do cliente em cada projeto.</div></div>
+      </div>
+      <div class="reveal flex gap-4 rounded-[14px] border border-[rgba(26,86,219,.15)] bg-[rgba(26,86,219,.06)] p-7 transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[rgba(26,86,219,.3)] to-[rgba(0,200,255,.1)] border border-[rgba(0,200,255,.2)] text-xl">⭐</div>
+        <div><div class="font-rajdhani text-lg font-bold text-white mb-1">Qualidade</div><div class="text-[#7ba0c8] text-sm leading-[1.7]">Executar serviços com elevado padrão técnico e precisão.</div></div>
+      </div>
+      <div class="reveal flex gap-4 rounded-[14px] border border-[rgba(26,86,219,.15)] bg-[rgba(26,86,219,.06)] p-7 transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[rgba(26,86,219,.3)] to-[rgba(0,200,255,.1)] border border-[rgba(0,200,255,.2)] text-xl">💡</div>
+        <div><div class="font-rajdhani text-lg font-bold text-white mb-1">Inovação</div><div class="text-[#7ba0c8] text-sm leading-[1.7]">Acompanhar as novas tecnologias e tendências do mercado.</div></div>
+      </div>
+      <div class="reveal flex gap-4 rounded-[14px] border border-[rgba(26,86,219,.15)] bg-[rgba(26,86,219,.06)] p-7 transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[rgba(26,86,219,.3)] to-[rgba(0,200,255,.1)] border border-[rgba(0,200,255,.2)] text-xl">🛡️</div>
+        <div><div class="font-rajdhani text-lg font-bold text-white mb-1">Responsabilidade</div><div class="text-[#7ba0c8] text-sm leading-[1.7]">Atuar com ética e profissionalismo em todos os projetos.</div></div>
+      </div>
+      <div class="reveal flex gap-4 rounded-[14px] border border-[rgba(26,86,219,.15)] bg-[rgba(26,86,219,.06)] p-7 transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[rgba(26,86,219,.3)] to-[rgba(0,200,255,.1)] border border-[rgba(0,200,255,.2)] text-xl">👥</div>
+        <div><div class="font-rajdhani text-lg font-bold text-white mb-1">Trabalho em Equipa</div><div class="text-[#7ba0c8] text-sm leading-[1.7]">Valorizar a colaboração entre os profissionais da empresa.</div></div>
+      </div>
+      <div class="reveal flex gap-4 rounded-[14px] border border-[rgba(26,86,219,.15)] bg-[rgba(26,86,219,.06)] p-7 transition duration-300 hover:-translate-y-1 hover:border-[rgba(0,200,255,.4)] hover:bg-[rgba(0,200,255,.04)]">
+        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[rgba(26,86,219,.3)] to-[rgba(0,200,255,.1)] border border-[rgba(0,200,255,.2)] text-xl">🎯</div>
+        <div><div class="font-rajdhani text-lg font-bold text-white mb-1">Foco no Cliente</div><div class="text-[#7ba0c8] text-sm leading-[1.7]">Entender e atender as necessidades específicas de cada cliente.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="py-[110px] bg-[rgba(11,24,41,.6)]">
+  <div class="mx-auto max-w-[1300px] px-6">
+    <div class="reveal space-y-6 text-center">
+      <div class="text-[0.72rem] uppercase tracking-[.22em] text-[#00c8ff]">Fale Connosco</div>
+      <h2 class="font-rajdhani text-[clamp(2rem,5vw,3.2rem)] font-bold text-white tracking-[.04em]">Entre em Contacto</h2>
+      <div class="mx-auto h-[3px] w-16 rounded-full bg-gradient-to-r from-[#2563eb] to-[#00c8ff]"></div>
+    </div>
+    <div class="mt-12 grid gap-16 lg:grid-cols-[1.4fr_1fr]">
+      <div class="space-y-8 reveal">
+        <h3 class="font-rajdhani text-2xl font-bold text-white">Estamos disponíveis para si</h3>
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-[rgba(26,86,219,.3)] bg-[rgba(26,86,219,.15)] text-[#00c8ff] transition duration-200 hover:bg-[rgba(0,200,255,.12)] hover:border-[rgba(0,200,255,.5)]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.86 19.86 0 0 1 1.62 3.38 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.91 5.91l1.27-1.27a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="text-[0.72rem] uppercase tracking-[.12em] text-[#00c8ff] mb-1">Telefone</div>
+              <div class="text-base font-semibold text-[#ddeeff]"><a href="tel:+244925789611" class="transition-colors duration-200 hover:text-[#00c8ff]">925 789 611</a></div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-[rgba(26,86,219,.3)] bg-[rgba(26,86,219,.15)] text-[#00c8ff] transition duration-200 hover:bg-[rgba(0,200,255,.12)] hover:border-[rgba(0,200,255,.5)]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </div>
+            <div>
+              <div class="text-[0.72rem] uppercase tracking-[.12em] text-[#00c8ff] mb-1">WhatsApp</div>
+              <div class="text-base font-semibold text-[#ddeeff]"><a href="https://wa.me/244911717003" target="_blank" rel="noopener" class="transition-colors duration-200 hover:text-[#00c8ff]">911 717 003</a></div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-[rgba(26,86,219,.3)] bg-[rgba(26,86,219,.15)] text-[#00c8ff] transition duration-200 hover:bg-[rgba(0,200,255,.12)] hover:border-[rgba(0,200,255,.5)]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="text-[0.72rem] uppercase tracking-[.12em] text-[#00c8ff] mb-1">Email</div>
+              <div class="text-base font-semibold text-[#ddeeff]"><a href="mailto:mateuscarlos73@hotmail.com" class="transition-colors duration-200 hover:text-[#00c8ff]">mateuscarlos73@hotmail.com</a></div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-[12px] border border-[rgba(26,86,219,.3)] bg-[rgba(26,86,219,.15)] text-[#00c8ff] transition duration-200 hover:bg-[rgba(0,200,255,.12)] hover:border-[rgba(0,200,255,.5)]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.33-6-10A6 6 0 0 1 12 5a6 6 0 0 1 6 6c0 4.67-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg>
+            </div>
+            <div>
+              <div class="text-[0.72rem] uppercase tracking-[.12em] text-[#00c8ff] mb-1">Localização</div>
+              <div class="text-base font-semibold text-[#ddeeff]"><a href="https://maps.google.com/?q=Rua+João+Belo+Benguela+Angola" target="_blank" rel="noopener" class="transition-colors duration-200 hover:text-[#00c8ff]">Rua João Belo, Benguela, Angola</a></div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="https://wa.me/244911717003" target="_blank" rel="noopener" class="social-btn inline-flex h-11 w-11 items-center justify-center rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(26,86,219,.12)] text-[#7ba0c8] transition duration-200 hover:border-[rgba(0,200,255,.5)] hover:bg-[rgba(0,200,255,.15)] hover:text-[#00c8ff]" title="WhatsApp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </a>
+          <a href="mailto:mateuscarlos73@hotmail.com" class="social-btn inline-flex h-11 w-11 items-center justify-center rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(26,86,219,.12)] text-[#7ba0c8] transition duration-200 hover:border-[rgba(0,200,255,.5)] hover:bg-[rgba(0,200,255,.15)] hover:text-[#00c8ff]" title="Email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+          </a>
+          <a href="https://maps.google.com/?q=Benguela+Angola" target="_blank" rel="noopener" class="social-btn inline-flex h-11 w-11 items-center justify-center rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(26,86,219,.12)] text-[#7ba0c8] transition duration-200 hover:border-[rgba(0,200,255,.5)] hover:bg-[rgba(0,200,255,.15)] hover:text-[#00c8ff]" title="Mapa">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-5.33-6-10A6 6 0 0 1 12 5a6 6 0 0 1 6 6c0 4.67-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="contact-form reveal rounded-[24px] border border-[rgba(26,86,219,.2)] bg-[rgba(14,32,64,.55)] p-10">
+        <h3 class="font-rajdhani text-2xl font-bold text-white mb-7">Solicitar Orçamento</h3>
+        <div class="grid gap-4 md:grid-cols-2 mb-4">
+          <div>
+            <label class="mb-2 block text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Nome Completo *</label>
+            <input type="text" id="f-nome" class="w-full rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(6,14,28,.7)] px-4 py-3 text-[#ddeeff] outline-none transition duration-200 focus:border-[#00c8ff] focus:ring-2 focus:ring-[#00c8ff]/10" placeholder="O seu nome completo" />
           </div>
           <div>
-            <div class="text-xs text-[#00c8ff] uppercase tracking-[0.12em] mb-0.5">Telefone</div>
-            <div class="text-sm text-[#e0eaff] font-medium">925 789 611</div>
+            <label class="mb-2 block text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Telefone / WhatsApp *</label>
+            <input type="tel" id="f-tel" class="w-full rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(6,14,28,.7)] px-4 py-3 text-[#ddeeff] outline-none transition duration-200 focus:border-[#00c8ff] focus:ring-2 focus:ring-[#00c8ff]/10" placeholder="+244 9XX XXX XXX" />
           </div>
         </div>
-        <div class="flex items-start gap-4 mb-6">
-          <div class="w-11 h-11 min-w-11 bg-[#1a56db]/15 border border-[#1a56db]/3 rounded-xl flex items-center justify-center text-[#00c8ff]">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" />
-            </svg>
-          </div>
-          <div>
-            <div class="text-xs text-[#00c8ff] uppercase tracking-[0.12em] mb-0.5">WhatsApp</div>
-            <div class="text-sm text-[#e0eaff] font-medium">911 717 003</div>
-          </div>
+        <div class="mb-4">
+          <label class="mb-2 block text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Email</label>
+          <input type="email" id="f-email" class="w-full rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(6,14,28,.7)] px-4 py-3 text-[#ddeeff] outline-none transition duration-200 focus:border-[#00c8ff] focus:ring-2 focus:ring-[#00c8ff]/10" placeholder="email@exemplo.com" />
         </div>
-        <div class="flex items-start gap-4 mb-6">
-          <div class="w-11 h-11 min-w-11 bg-[#1a56db]/15 border border-[#1a56db]/3 rounded-xl flex items-center justify-center text-[#00c8ff]">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16v16H4z" />
-              <polyline points="22,6 12,13 2,6" />
-            </svg>
-          </div>
-          <div>
-            <div class="text-xs text-[#00c8ff] uppercase tracking-[0.12em] mb-0.5">Email</div>
-            <div class="text-sm text-[#e0eaff] font-medium">mateuscarlos73@hotmail.com</div>
-          </div>
+        <div class="mb-4">
+          <label class="mb-2 block text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Serviço Pretendido *</label>
+          <select id="f-servico" class="w-full rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(6,14,28,.7)] px-4 py-3 text-[#ddeeff] outline-none transition duration-200 focus:border-[#00c8ff] focus:ring-2 focus:ring-[#00c8ff]/10">
+            <option value="" disabled selected>Selecione um serviço...</option>
+            <option>Instalação de Redes (LAN/WAN/Fibra)</option>
+            <option>Videovigilância CCTV</option>
+            <option>Alarme de Incêndio</option>
+            <option>Sistemas Operativos</option>
+            <option>Rádio Telecomunicações</option>
+            <option>Sistemas de TV / SMATV</option>
+            <option>Telefonia IP / VoIP / PABX</option>
+            <option>Outro (especificar na mensagem)</option>
+          </select>
         </div>
-        <div class="flex items-start gap-4 mb-6">
-          <div class="w-11 h-11 min-w-11 bg-[#1a56db]/15 border border-[#1a56db]/3 rounded-xl flex items-center justify-center text-[#00c8ff]">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 21s-6-5.33-6-10A6 6 0 0 1 12 5a6 6 0 0 1 6 6c0 4.67-6 10-6 10z" />
-              <circle cx="12" cy="11" r="2" />
-            </svg>
-          </div>
-          <div>
-            <div class="text-xs text-[#00c8ff] uppercase tracking-[0.12em] mb-0.5">Localização</div>
-            <div class="text-sm text-[#e0eaff] font-medium">Rua João Belo, Benguela</div>
-          </div>
+        <div class="mb-4">
+          <label class="mb-2 block text-[0.75rem] uppercase tracking-[.1em] text-[#7ba0c8]">Mensagem / Descrição do Projeto</label>
+          <textarea id="f-msg" class="h-[130px] w-full resize-y rounded-[10px] border border-[rgba(26,86,219,.25)] bg-[rgba(6,14,28,.7)] px-4 py-3 text-[#ddeeff] outline-none transition duration-200 focus:border-[#00c8ff] focus:ring-2 focus:ring-[#00c8ff]/10" placeholder="Descreva a sua necessidade, dimensão do projeto, prazo esperado..."></textarea>
         </div>
-      </div>
-      <div class="bg-[#0f2645]/5 border border-[#1a56db]/2 rounded-3xl p-10 opacity-0 translate-y-8 transition-all duration-700 ease-out" style="animation: fadeInUp 0.7s ease-out forwards;">
-        <div class="mb-5">
-          <label class="block text-xs text-[#8eadd4] uppercase tracking-[0.1em] mb-1.5">Nome Completo</label>
-          <input type="text" class="w-full bg-[#07101f]/7 border border-[#1a56db]/25 rounded-lg px-4 py-3 text-[#e0eaff] font-['Exo_2'] text-sm outline-none focus:border-[#00c8ff] transition-border duration-200" placeholder="O seu nome" />
-        </div>
-        <div class="mb-5">
-          <label class="block text-xs text-[#8eadd4] uppercase tracking-[0.1em] mb-1.5">Email / Telefone</label>
-          <input type="text" class="w-full bg-[#07101f]/7 border border-[#1a56db]/25 rounded-lg px-4 py-3 text-[#e0eaff] font-['Exo_2'] text-sm outline-none focus:border-[#00c8ff] transition-border duration-200" placeholder="email@exemplo.com ou +244 9XX XXX XXX" />
-        </div>
-        <div class="mb-5">
-          <label class="block text-xs text-[#8eadd4] uppercase tracking-[0.1em] mb-1.5">Serviço Pretendido</label>
-          <input type="text" class="w-full bg-[#07101f]/7 border border-[#1a56db]/25 rounded-lg px-4 py-3 text-[#e0eaff] font-['Exo_2'] text-sm outline-none focus:border-[#00c8ff] transition-border duration-200" placeholder="Ex: Instalação de rede, CCTV..." />
-        </div>
-        <div class="mb-5">
-          <label class="block text-xs text-[#8eadd4] uppercase tracking-[0.1em] mb-1.5">Mensagem</label>
-          <textarea class="w-full bg-[#07101f]/7 border border-[#1a56db]/25 rounded-lg px-4 py-3 text-[#e0eaff] font-['Exo_2'] text-sm outline-none focus:border-[#00c8ff] transition-border duration-200 min-h-32 resize-vertical" placeholder="Descreva a sua necessidade..."></textarea>
-        </div>
-        <button class="w-full py-3.5 bg-gradient-to-br from-[#1a56db] to-[#1a3a8f] text-white border-none rounded-lg font-['Rajdhani'] text-base font-semibold tracking-[0.08em] uppercase cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_24px_rgba(26,86,219,0.5)] transition-all duration-200">Enviar Mensagem</button>
+        <button type="button" onclick="submitForm()" class="w-full rounded-[10px] bg-gradient-to-br from-[#2563eb] to-[#1230a0] px-6 py-4 text-[1.05rem] font-rajdhani font-bold uppercase tracking-[.09em] text-white shadow-[0_4px_20px_rgba(26,86,219,.5)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_10px_32px_rgba(26,86,219,.65)]">Enviar Pedido de Orçamento →</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="bg-[#051420]/9 border-t border-[#1a56db]/2 py-8 relative z-10">
-  <div class="max-w-7xl mx-auto flex items-center justify-between px-8 flex-wrap gap-4">
-    <div class="font-['Rajdhani'] text-lg font-bold text-white tracking-[0.08em]">CARLOS<span class="text-[#00c8ff]">MATEUS</span> · CM</div>
-    <div class="text-xs text-[#8eadd4]">© 2025 Carlos Mateus. Todos os direitos reservados. · Benguela, Angola</div>
+<footer class="bg-[rgba(4,10,20,.95)] border-t border-[rgba(26,86,219,.2)] py-12 px-6">
+  <div class="mx-auto grid max-w-[1300px] gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] pb-10">
+    <div class="space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#2563eb] to-[#1230a0] text-sm font-bold text-white shadow-[0_0_16px_rgba(26,86,219,.5)]">CM</div>
+        <div class="font-rajdhani font-bold text-white text-lg tracking-[.06em]">CARLOS<span class="text-[#00c8ff]">MATEUS</span></div>
+      </div>
+      <p class="text-[#7ba0c8] leading-7">Empresa especializada em Informática e Telecomunicações. Qualidade, inovação e compromisso em Benguela, Angola.</p>
+    </div>
+    <div>
+      <h4 class="font-rajdhani text-[0.95rem] font-bold uppercase tracking-[.08em] text-white mb-5">Serviços</h4>
+      <ul class="space-y-3 text-[#7ba0c8] text-[0.87rem]">
+        <li><a href="#servicos" class="transition-colors duration-200 hover:text-[#00c8ff]">Instalação de Redes</a></li>
+        <li><a href="#servicos" class="transition-colors duration-200 hover:text-[#00c8ff]">Videovigilância CCTV</a></li>
+        <li><a href="#servicos" class="transition-colors duration-200 hover:text-[#00c8ff]">Alarme de Incêndio</a></li>
+        <li><a href="#servicos" class="transition-colors duration-200 hover:text-[#00c8ff]">Sistemas Operativos</a></li>
+        <li><a href="#servicos" class="transition-colors duration-200 hover:text-[#00c8ff]">Telefonia VoIP / PABX</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-rajdhani text-[0.95rem] font-bold uppercase tracking-[.08em] text-white mb-5">Empresa</h4>
+      <ul class="space-y-3 text-[#7ba0c8] text-[0.87rem]">
+        <li><a href="#sobre" class="transition-colors duration-200 hover:text-[#00c8ff]">Sobre Nós</a></li>
+        <li><a href="#projetos" class="transition-colors duration-200 hover:text-[#00c8ff]">Projetos</a></li>
+        <li><a href="#mvv" class="transition-colors duration-200 hover:text-[#00c8ff]">Missão &amp; Visão</a></li>
+        <li><a href="#valores" class="transition-colors duration-200 hover:text-[#00c8ff]">Valores</a></li>
+        <li><a href="#contacto" class="transition-colors duration-200 hover:text-[#00c8ff]">Contacto</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-rajdhani text-[0.95rem] font-bold uppercase tracking-[.08em] text-white mb-5">Contacto</h4>
+      <ul class="space-y-3 text-[#7ba0c8] text-[0.87rem]">
+        <li><a href="tel:+244925789611" class="transition-colors duration-200 hover:text-[#00c8ff]">📞 925 789 611</a></li>
+        <li><a href="https://wa.me/244911717003" target="_blank" rel="noopener" class="transition-colors duration-200 hover:text-[#00c8ff]">💬 911 717 003</a></li>
+        <li><a href="mailto:mateuscarlos73@hotmail.com" class="transition-colors duration-200 hover:text-[#00c8ff]">✉️ mateuscarlos73@hotmail.com</a></li>
+        <li><a href="https://maps.google.com/?q=Benguela+Angola" target="_blank" rel="noopener" class="transition-colors duration-200 hover:text-[#00c8ff]">📍 Rua João Belo, Benguela</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mx-auto flex max-w-[1300px] flex-col items-center justify-between gap-4 border-t border-[rgba(26,86,219,.15)] pt-6 text-center text-[#7ba0c8] md:flex-row">
+    <div class="font-rajdhani text-[1.1rem] font-bold text-white tracking-[.08em]">CARLOS<span class="text-[#00c8ff]">MATEUS</span> · CM</div>
+    <div class="text-[0.8rem]">© 2025 Carlos Mateus. Todos os direitos reservados · Benguela, Angola</div>
   </div>
 </footer>
 
-<script>
-  // Hamburger menu
-  function toggleMenu() {
-    const menu = document.getElementById('mobileMenu');
-    menu.classList.toggle('hidden');
-  }
+<div id="modal-overlay" onclick="closeModalOut(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <img id="m-img" class="modal-img" src="" alt="" />
+    <div class="modal-body">
+      <div class="modal-cat" id="m-cat"></div>
+      <div class="modal-title" id="m-title"></div>
+      <div class="modal-text" id="m-text"></div>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#contacto" onclick="closeModal()" class="inline-flex rounded-[1rem] bg-gradient-to-br from-[#2563eb] to-[#1230a0] px-6 py-3 text-[0.85rem] font-rajdhani font-bold uppercase tracking-[.08em] text-white">Solicitar Serviço Similar</a>
+        <button type="button" onclick="closeModal()" class="inline-flex rounded-[1rem] border border-[rgba(0,200,255,.45)] bg-[rgba(0,200,255,.08)] px-6 py-3 text-[0.85rem] font-rajdhani font-bold uppercase tracking-[.08em] text-[#00c8ff]">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
+<div id="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Mensagem enviada!</span>
+</div>
+
+<script>
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40));
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      const href=a.getAttribute('href');
+      if(href==='#')return;
+      const target=document.querySelector(href);
+      if(!target)return;
       e.preventDefault();
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
+      target.scrollIntoView({behavior:'smooth'});
     });
   });
-
-  // Fade-up on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => {
-          e.target.classList.remove('opacity-0', 'translate-y-8');
-          e.target.classList.add('opacity-100', 'translate-y-0');
-        }, i * 80);
-        observer.unobserve(e.target);
+  function toggleMenu(){
+    document.getElementById('mob-menu').classList.toggle('open');
+    document.getElementById('mob-menu').classList.toggle('hidden');
+    document.getElementById('burger').classList.toggle('open');
+  }
+  function closeMob(){
+    document.getElementById('mob-menu').classList.remove('open');
+    document.getElementById('mob-menu').classList.add('hidden');
+    document.getElementById('burger').classList.remove('open');
+  }
+  const revealObserver=new IntersectionObserver((entries)=>{
+    entries.forEach((entry,index)=>{
+      if(entry.isIntersecting){
+        setTimeout(()=>entry.target.classList.add('visible'),index*90);
+        revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.12 });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+  function filterP(cat,btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.proj-card').forEach(card=>{
+      card.style.display = (cat==='todos'||card.dataset.cat===cat) ? '' : 'none';
+    });
+  }
+  function openModal(title,cat,img,text){
+    document.getElementById('m-title').textContent=title;
+    document.getElementById('m-cat').textContent=cat;
+    document.getElementById('m-img').src=img;
+    document.getElementById('m-text').textContent=text;
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeModal(){
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow='';
+  }
+  function closeModalOut(e){
+    if(e.target===document.getElementById('modal-overlay')) closeModal();
+  }
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') closeModal();});
+  function submitForm(){
+    const nome=document.getElementById('f-nome').value.trim();
+    const tel=document.getElementById('f-tel').value.trim();
+    const servico=document.getElementById('f-servico').value;
+    if(!nome||!tel||!servico){showToast('⚠️ Preencha os campos obrigatórios (*)');return;}
+    const email=document.getElementById('f-email').value.trim();
+    const msg=document.getElementById('f-msg').value.trim();
+    const txt=encodeURIComponent(
+      `*Pedido de Orçamento – Carlos Mateus*
 
-  document.querySelectorAll('[class*="opacity-0"]').forEach(el => observer.observe(el));
+`+
+      `👤 *Nome:* ${nome}
+`+
+      `📞 *Telefone:* ${tel}
+`+
+      (email?`✉️ *Email:* ${email}
+`:``)+
+      `🔧 *Serviço:* ${servico}
+`+
+      (msg?`📝 *Mensagem:* ${msg}`:``)
+    );
+    window.open(`https://wa.me/244911717003?text=${txt}`,'_blank');
+    ['f-nome','f-tel','f-email','f-msg'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-servico').selectedIndex=0;
+    showToast('✅ A abrir WhatsApp...');
+  }
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    document.getElementById('toast-msg').textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3600);
+  }
 </script>
 </body>
 </html>
-
